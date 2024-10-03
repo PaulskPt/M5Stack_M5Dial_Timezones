@@ -27,7 +27,7 @@ Reset:
 Pressing the button (of the display) will cause a software reset.
 
 On reset the Arduino Sketch will try to connect to the WiFi Access Point of your choice (set in secret.h). If successful the sketch will next connect to a NTP server of your choice, then download the current datetime stamp.
-If NTP is connected, the external RTC unit will be set to the NTP datetime stamp with the local time for the current Timezone.
+If NTP is connected, the internal RTC of the M5Dial device will be set to the NTP datetime stamp with the local time for the current Timezone.
 Next the sketch will display date and time of the current Timezone, taken from the external RTC, onto the OLED display. Every second the date and time will be updated.
 Because the external RTC Unit has a built-in battery, the datetime set will not be lost when power is lost.
 
