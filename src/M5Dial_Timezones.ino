@@ -255,15 +255,14 @@ bool initTime(void)
     Serial.print('.');
     delay(1000);
   };
-  Serial.println("\nNTP Connected.");
 
   if (is_tm_empty(timeinfo))
   {
-    std::cout << *TAG << "Failed to obtain datetime from NTP" << std::endl;
+    std::cout << *TAG << "Failed to obtain datetime" << std::endl;
   }
   else
   {
-    std::cout << *TAG << "Got this datetime from NTP: " << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S") << std::endl;
+    std::cout << *TAG << "datetime: " << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S") << std::endl;
     // Now we can set the real timezone
     ret = true;
   }
