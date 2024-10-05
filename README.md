@@ -44,7 +44,7 @@ Pressing the button (of the display) will cause a software reset.
 
 On reset the Arduino Sketch will try to connect to the WiFi Access Point of your choice (set in secret.h). 
 The sketch will connect to a NTP server of your choice. In this version the sketch uses a ```NTP polling system```. 
-The following define sets the interval time:
+The following define sets the NTP polling interval time:
 
 ```
 51 #define CONFIG_LWIP_SNTP_UPDATE_DELAY  15 * 60 * 1000 // = 15 minutes
