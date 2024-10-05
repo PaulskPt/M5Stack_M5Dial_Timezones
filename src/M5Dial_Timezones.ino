@@ -34,7 +34,7 @@
 #include <iomanip> // For setFill and setW
 #include <cstring> // For strcpy
 
-namespace {  // anonymous namespace (also known as an unnamed namespace)
+//namespace {  // anonymous namespace (also known as an unnamed namespace)
 
 #define WIFI_SSID     SECRET_SSID // "YOUR WIFI SSID NAME"
 #define WIFI_PASSWORD SECRET_PASS //"YOUR WIFI PASSWORD"
@@ -56,6 +56,7 @@ std::string elem_zone_code_old;
 bool zone_has_changed = false;
 
 bool my_debug = false;
+bool spkr_on = true;
 struct tm timeinfo = {};
 bool use_timeinfo = true;
 std::tm* tm_local = {};
@@ -88,7 +89,22 @@ const int zone_max_idx = 6;
 // however I have less "headache" by using Strings. E.g. the string.indexOf()
 // and string.substring() functions make work much easier!
 
-} // end of namespace
+//} // end of namespace
+
+void spkr(void)
+{
+  // Speaker test
+  // Play two tones alternating
+  // Use M5.Speaker.beep or M5.Speaker.tone
+  M5Dial.Speaker.setVolume(8); // (range is 0 to 10)
+  for (int j=0; j < 2; j++)
+  {
+    M5Dial.Speaker.tone(10000, 100);
+    delay(1000);
+    M5Dial.Speaker.tone(4000, 20);
+    delay(1000);
+  }
+}
 
 std::map<int, std::tuple<std::string, std::string>> zones_map;
 
@@ -163,8 +179,20 @@ void map_replace_first_zone(void)
   }
 }
 
-
-
+/* Show or remove NTP Time Sync notification on the middle of the top of the display */
+void ntp_sync_notification_txt(bool show)
+{
+  if (show)
+  {
+    M5Dial.Display.setCursor(dw/2-25, 20);
+    M5Dial.Display.setTextColor(GREEN, BLACK);
+    M5Dial.Display.print("TS");
+  }
+  else
+  {
+    M5Dial.Display.fillRect(dw/2-25, 15, 50, 25, BLACK);
+  }
+}
 /*
   The getLocalTime() function is often used in microcontroller projects, such as with the ESP32, 
   to retrieve the current local time from an NTP (Network Time Protocol) server. 
@@ -183,7 +211,7 @@ bool poll_NTP(void)
   else
   {
     std::cout << *TAG << "Failed to obtain time " << std::endl;
-    M5Dial.Display.clear();
+    clr_scrn_partly();
     M5Dial.Display.setCursor(hori[1], vert[2]);
     M5Dial.Display.print(F("Failed to obtain time"));
     //display.waitDisplay();
@@ -202,9 +230,20 @@ bool is_tm_empty(const std::tm& timeinfo)
 
 void time_sync_notification_cb(struct timeval *tv)
 {
+    if (tv != nullptr) {
+        std::cout << "Seconds: " << tv->tv_sec << ", Microseconds: " << tv->tv_usec << std::endl;
+    } else {
+        std::cerr << "Invalid timeval pointer" << std::endl;
+    }
+
+    if (spkr_on == true)
+    {
+      spkr();
+    }
     std::shared_ptr<std::string> TAG = std::make_shared<std::string>("sntp_initialize(): ");
     time_t t = time(NULL);
     std::cout << *TAG << "time synchronized at time (UTC): " << asctime(gmtime(&t)) << std::flush;  // prevent a 2nd LF. Do not use std::endl
+    ntp_sync_notification_txt(true);
 }
 
 void sntp_initialize() {
@@ -249,9 +288,9 @@ void setTimezone(void)
   // Serial.printf("Setting Timezone to \"%s\"\n",elem_zone_code.c_str());
   setenv("TZ",elem_zone_code.c_str(),1);
   //  Now adjust the TZ.  Clock settings are adjusted to show the new local time
-  delay(1000);
+  delay(500);
   tzset();
-  delay(1000);
+  delay(500);
 
   if (my_debug)
   {
@@ -466,7 +505,9 @@ void disp_data(void)
   // =========== 1st view =================
   if (ck_Btn())
     return;
-  M5Dial.Display.clear();
+
+  clr_scrn_partly();
+  M5Dial.Display.setTextColor(YELLOW, BLACK);
   if (index >= 0 && index2 >= 0)
   {
     M5Dial.Display.setCursor(hori[1], vert[1]+5);
@@ -494,11 +535,12 @@ void disp_data(void)
   // =========== 2nd view =================
   if (ck_Btn())
     return;
-  M5Dial.Display.clear();
+
+  clr_scrn_partly();
+  M5Dial.Display.setTextColor(YELLOW, BLACK);
   M5Dial.Display.setCursor(hori[1], vert[1]+5);
   M5Dial.Display.print("Zone");
   M5Dial.Display.setCursor(hori[1], vert[2]);
-  //M5Dial.Display.print(&timeinfo, "%Z %z");
   M5Dial.Display.print(&my_timeinfo, "%Z %z");
   delay(disp_data_delay);
   if (TimeToChangeZone)
@@ -506,15 +548,14 @@ void disp_data(void)
   // =========== 3rd view =================
   if (ck_Btn())
     return;
-  M5Dial.Display.clear();
+
+  clr_scrn_partly();
+  M5Dial.Display.setTextColor(YELLOW, BLACK);
   M5Dial.Display.setCursor(hori[1], vert[1]+5);
-  //M5Dial.Display.print(&timeinfo, "%A");  // Day of the week
   M5Dial.Display.print(&my_timeinfo, "%A");  // Day of the week
   M5Dial.Display.setCursor(hori[1], vert[2]-2);
-  //M5Dial.Display.print(&timeinfo, "%B %d");
   M5Dial.Display.print(&my_timeinfo, "%B %d");
   M5Dial.Display.setCursor(hori[1], vert[3]-10);
-  //M5Dial.Display.print(&timeinfo, "%Y");
   M5Dial.Display.print(&my_timeinfo, "%Y");
   delay(disp_data_delay);
   if (TimeToChangeZone)
@@ -522,12 +563,15 @@ void disp_data(void)
    // =========== 4th view =================
   if (ck_Btn())
     return;
-  M5Dial.Display.clear();
+
+  clr_scrn_partly();
+  M5Dial.Display.setTextColor(YELLOW, BLACK);
   M5Dial.Display.setCursor(hori[1], vert[1]+5);
-  //M5Dial.Display.print(&timeinfo, "%H:%M:%S");
   M5Dial.Display.print(&my_timeinfo, "%H:%M:%S");
   M5Dial.Display.setCursor(hori[1], vert[2]);
   
+  ntp_sync_notification_txt(false);
+
   if (index2 >= 0)
   {
     M5Dial.Display.printf("in %s\n", part4.c_str());
@@ -713,7 +757,7 @@ void start_scrn(void) {
   int vert2[] = {0, 60, 90, 120, 150}; 
   int x = 0;
 
-  M5Dial.Display.clear();
+  clr_scrn_partly();
   M5Dial.Display.setTextColor(RED, BLACK);
   //M5Dial.Display.setFont(&fonts::FreeSans18pt7b);
 
@@ -729,9 +773,17 @@ void start_scrn(void) {
   //M5Dial.Display.setFont(&fonts::FreeSans12pt7b); // was: efontCN_14);
 }
 
+void clr_scrn_partly(void)
+{
+  M5Dial.Display.fillRect(hori[0],vert[1]-5, dw-1, dh-1, BLACK);  // clear display except the upper row
+}
+
 void setup(void) 
 {
   M5.begin();  
+  auto cfg = M5.config();
+
+  M5Dial.begin(cfg, true, false);
 
   /*
   * A workaround to prevent some problems regarding 
@@ -830,7 +882,7 @@ void setup(void)
   else
     connect_try++;
 
-  M5Dial.Display.clear();
+  clr_scrn_partly();
 }
 
 void loop(void)
@@ -856,7 +908,7 @@ void loop(void)
 
         if (connect_try >= max_connect_try)
         {
-          M5Dial.Display.clear();
+          clr_scrn_partly();
           M5Dial.Display.setCursor(hori[1], vert[1]+5);
           M5Dial.Display.print("WiFi fail!");
           M5Dial.Display.setCursor(hori[1], vert[2]-2);
@@ -922,7 +974,7 @@ void loop(void)
     //delay(1000);  // Wait 1 second
   }
   
-  M5Dial.Display.clear();
+  clr_scrn_partly();
   M5Dial.Display.setCursor(hori[1], vert[2]-2);
   M5Dial.Display.print("Bye...");
   M5Dial.update();
