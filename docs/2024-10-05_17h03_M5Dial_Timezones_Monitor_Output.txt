@@ -37,7 +37,7 @@ zone code original: "JST-9", replaced by zone code: "WET0WEST,M3.5.0/1,M10.5.0"
 WiFi: ................
 
 connect_WiFi(): 
-MAC: 24:58:7c:53:c2:c4
+MAC: __:__:__:__:__:__
 sntp_initialize(): sntp initialized
 sntp_initialize(): sntp set to polling mode
 sntp_initialize(): sntp polling interval: 15 Minute(s)

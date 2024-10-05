@@ -55,6 +55,7 @@ std::string elem_zone_code;
 std::string elem_zone_code_old;
 bool zone_has_changed = false;
 
+bool my_debug = false;
 bool use_local_time = false; // for the external RTC    (was: use_local_time = true // for the ESP32 internal clock )
 struct tm timeinfo = {};
 bool use_timeinfo = true;
@@ -148,16 +149,19 @@ void map_replace_first_zone(void)
   std::cout << "Map size after erase: " << myMap.size() << std::endl;
   */
  
-  std::cout << "map_replace_first_zone(): successful replaced the first record of the zone_map:" << std::endl;
-  
-  std::cout << "zone original: \"" << elem_zone_original.c_str() << "\""
-    << ", replaced by zone: \"" << elem_zone_check.c_str()  << "\""
-    << " (from file secrets.h)" 
-    << std::endl;
-  
-  std::cout << "zone code original: \"" <<  elem_zone_code_original.c_str() << "\""
-    << ", replaced by zone code: \"" << elem_zone_code_check.c_str() << "\""
-    << std::endl;
+  if (my_debug)
+  {
+    std::cout << "map_replace_first_zone(): successful replaced the first record of the zone_map:" << std::endl;
+    
+    std::cout << "zone original: \"" << elem_zone_original.c_str() << "\""
+      << ", replaced by zone: \"" << elem_zone_check.c_str()  << "\""
+      << " (from file secrets.h)" 
+      << std::endl;
+    
+    std::cout << "zone code original: \"" <<  elem_zone_code_original.c_str() << "\""
+      << ", replaced by zone code: \"" << elem_zone_code_check.c_str() << "\""
+      << std::endl;
+  }
 }
 
 
@@ -205,22 +209,24 @@ void time_sync_notification_cb(struct timeval *tv)
 }
 
 void sntp_initialize() {
-    std::shared_ptr<std::string> TAG = std::make_shared<std::string>("sntp_initialize(): ");
-    sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(0, NTP_SERVER1);
-    sntp_set_sync_interval(CONFIG_LWIP_SNTP_UPDATE_DELAY);
-    sntp_set_time_sync_notification_cb(time_sync_notification_cb);
-    sntp_init();
+  std::shared_ptr<std::string> TAG = std::make_shared<std::string>("sntp_initialize(): ");
+  sntp_setoperatingmode(SNTP_OPMODE_POLL);
+  sntp_setservername(0, NTP_SERVER1);
+  sntp_set_sync_interval(CONFIG_LWIP_SNTP_UPDATE_DELAY);
+  sntp_set_time_sync_notification_cb(time_sync_notification_cb);
+  sntp_init();
+  
+  if (my_debug)
+  {
     std::cout << *TAG << "sntp initialized" << std::endl;
     std::cout << *TAG << "sntp set to polling mode" << std::endl;
-    std::cout << *TAG << "sntp polling interval: " << std::to_string(CONFIG_LWIP_SNTP_UPDATE_DELAY/60000) << " Minute(s)" << std::endl;
+  }
+  std::cout << *TAG << "sntp polling interval: " << std::to_string(CONFIG_LWIP_SNTP_UPDATE_DELAY/60000) << " Minute(s)" << std::endl;
 }
 
 void setTimezone(void)
 {
   std::shared_ptr<std::string> TAG = std::make_shared<std::string>("setTimezone(): ");
-
-  //std::cout << *TAG << std::flush;
   elem_zone = std::get<0>(zones_map[zone_idx]);
   elem_zone_code = std::get<1>(zones_map[zone_idx]);
   if (elem_zone_code != elem_zone_code_old)
@@ -228,8 +234,11 @@ void setTimezone(void)
     elem_zone_code_old = elem_zone_code;
     const char s1[] = "has changed to: ";
     zone_has_changed = true;
-    std::cout << *TAG << "Timezone " << s1 << "\"" << elem_zone.c_str() << "\"" << std::endl;
-    std::cout << *TAG << "Timezone code " << s1 << "\"" << elem_zone_code.c_str() << "\"" << std::endl;
+    if (my_debug)
+    {
+      std::cout << *TAG << "Timezone " << s1 << "\"" << elem_zone.c_str() << "\"" << std::endl;
+      std::cout << *TAG << "Timezone code " << s1 << "\"" << elem_zone_code.c_str() << "\"" << std::endl;
+    }
   }
 
   /*
@@ -244,8 +253,12 @@ void setTimezone(void)
   delay(1000);
   tzset();
   delay(1000);
-  // Check:
-  std::cout << *TAG << "check environment variable TZ = \"" << getenv("TZ") << "\"" << std::endl;
+
+  if (my_debug)
+  {
+    // Check:
+    std::cout << *TAG << "check environment variable TZ = \"" << getenv("TZ") << "\"" << std::endl;
+  }
 }
 
 bool initTime(void)
@@ -255,14 +268,17 @@ bool initTime(void)
   elem_zone = std::get<0>(zones_map[zone_idx]);
   elem_zone_code = std::get<1>(zones_map[zone_idx]);
 
-  std::cout << *TAG << "Setting up time" << std::endl;
-  std::cout << "zone       = \"" << elem_zone.c_str() << "\"" << std::endl;
-  std::cout << "zone code  = \"" << elem_zone_code.c_str() << "\"" << std::endl;
-  std::cout 
-    << "NTP_SERVER1 = \"" << NTP_SERVER1 << "\", " 
-    << "NTP_SERVER2 = \"" << NTP_SERVER2 << "\", "
-    << "NTP_SERVER3 = \"" << NTP_SERVER3 << "\""
-    << std::endl;
+  if (my_debug)
+  {
+    std::cout << *TAG << "Setting up time" << std::endl;
+    std::cout << "zone       = \"" << elem_zone.c_str() << "\"" << std::endl;
+    std::cout << "zone code  = \"" << elem_zone_code.c_str() << "\"" << std::endl;
+    std::cout 
+      << "NTP_SERVER1 = \"" << NTP_SERVER1 << "\", " 
+      << "NTP_SERVER2 = \"" << NTP_SERVER2 << "\", "
+      << "NTP_SERVER3 = \"" << NTP_SERVER3 << "\""
+      << std::endl;
+  }
 
   /*
   * See answer from: bperrybap (March 2021, post #6)
@@ -301,7 +317,10 @@ char* my_env = getenv("TZ");
   }
   else
   {
-    std::cout << *TAG << "Got this datetime from NTP: " << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S") << std::endl;
+    if (my_debug)
+    {
+      std::cout << *TAG << "Got this datetime from NTP: " << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S") << std::endl;
+    }
     // Now we can set the real timezone
     setTimezone();
 
@@ -313,12 +332,11 @@ char* my_env = getenv("TZ");
 bool set_RTC(void)
 {
   bool ret = false;
-  // Serial.print("set_RTC(): timeinfo.tm_year = ");
-  // Serial.println(timeinfo.tm_year);
+  std::shared_ptr<std::string> TAG = std::make_shared<std::string>("set_RTC(): ");
   struct tm my_timeinfo;
   if(!getLocalTime(&my_timeinfo))
   {
-    std::cout << "Failed to obtain time" << std::endl;
+    std::cout << *TAG << "Failed to obtain time" << std::endl;
     return ret;
   }
 
@@ -327,16 +345,18 @@ bool set_RTC(void)
     //                            YYYY  MM  DD      hh  mm  ss
     //M5Dial.Rtc.setDateTime( { { 2021, 12, 31 }, { 12, 34, 56 } } );
     M5Dial.Rtc.setDateTime( {{my_timeinfo.tm_year + 1900, my_timeinfo.tm_mon + 1, my_timeinfo.tm_mday}, {my_timeinfo.tm_hour, my_timeinfo.tm_min, my_timeinfo.tm_sec}} );
-    std::cout << "set_RTC(): internal RTC has been set to: " 
-    << std::to_string(RTCdate.tm_year) << "-" 
-    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_mon) << "-"
-    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_mday) << " ("
-    << wd[my_timeinfo.tm_wday] << ") "
-    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_hour) << ":"
-    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_min) << ":"
-    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_sec) << std::endl;
-    //std::cout << "Check: " << std::endl;
-    //poll_RTC();
+
+    if (my_debug)
+    {
+      std::cout << *TAG << "internal RTC has been set to: " 
+      << std::to_string(RTCdate.tm_year) << "-" 
+      << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_mon) << "-"
+      << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_mday) << " ("
+      << wd[my_timeinfo.tm_wday] << ") "
+      << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_hour) << ":"
+      << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_min) << ":"
+      << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_sec) << std::endl;
+    }
     ret = true;
   }
   return ret;
@@ -352,6 +372,7 @@ void poll_RTC(void)
   // struct tm timeinfo;
   t = std::time(nullptr);
 
+  if (my_debug)
   {
     std::tm* tm = std::gmtime(&t);  // for UTC.
     std::cout << std::dec << *TAG << "ESP32 UTC : " 
@@ -364,6 +385,7 @@ void poll_RTC(void)
       << std::setfill('0') << std::setw(2) << (tm->tm_sec)  << std::endl;
   }
 
+  if (my_debug)
   {
     // std::tm* tm_local  Global var!
     //tm_local = std::localtime(&t);  // for local timezone.
@@ -387,7 +409,8 @@ void printLocalTime()  // "Local" of the current selected timezone!
     std::cout << "Failed to obtain time" << std::endl;
     return;
   }
-  std::cout << *TAG << "Timezone: " << elem_zone.c_str() << ", datetime: " << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S") << std::endl;
+  if (my_debug)
+    std::cout << *TAG << "Timezone: " << elem_zone.c_str() << ", datetime: " << std::put_time(&timeinfo, "%Y-%m-%d %H:%M:%S") << std::endl;
 }
 
 /* This function uses global var timeinfo to display date and time data.
@@ -551,9 +574,11 @@ void chg_display_clr(void)
 
 bool connect_WiFi(void)
 {
-  std::shared_ptr<std::string> TAG = std::make_shared<std::string>("connect_WiFi(): ");
   bool ret = false;
-  std::cout << std::endl << "WiFi: " << std::flush;
+  if (my_debug)
+  {
+    std::cout << std::endl << "WiFi: " << std::flush;
+  }
   WiFi.begin( WIFI_SSID, WIFI_PASSWORD );
 
   for (int i = 20; i && WiFi.status() != WL_CONNECTED; --i)
@@ -565,33 +590,42 @@ bool connect_WiFi(void)
   {
     ret = true;
     std::cout << "\r\n" << std::flush;
-    std::cout << *TAG << "WiFi Connected to: " << WIFI_SSID << std::endl;
-    IPAddress ip;
-    ip = WiFi.localIP();
-    std::cout << "IP address: " << std::hex << ip << std::endl;
-    byte mac[6];
-    WiFi.macAddress(mac);
+    if (my_debug)
+      std::cout << "WiFi Connected to: " << WIFI_SSID << std::endl;
+    else
+      std::cout << "WiFi Connected" << std::endl;
 
-    // Allocate a buffer of 18 characters (12 for MAC + 5 colons + 1 null terminator)
-    char* mac_buff = new char[18];
-
-    // Create a shared_ptr to manage the buffer with a custom deleter
-    std::shared_ptr<char> bufferPtr(mac_buff, customDeleter);
-
-    std::cout << *TAG << std::endl;
-
-    std::cout << "MAC: ";
-    for (int i = 0; i < 6; ++i)
+    if (my_debug)
     {
-      if (i > 0) std::cout << ":";
-      std::cout << std::hex << (int)mac[i];
-    }
-    std::cout << std::dec << std::endl;
+      IPAddress ip;
+      ip = WiFi.localIP();
+      // Convert IPAddress to string
+      String ipStr = ip.toString();
+      std::cout << "IP address: " << ipStr.c_str() << std::endl;
 
+      byte mac[6];
+      WiFi.macAddress(mac);
+
+      // Allocate a buffer of 18 characters (12 for MAC + 5 colons + 1 null terminator)
+      char* mac_buff = new char[18];
+
+      // Create a shared_ptr to manage the buffer with a custom deleter
+      std::shared_ptr<char> bufferPtr(mac_buff, customDeleter);
+
+      std::cout << *TAG << std::endl;
+
+      std::cout << "MAC: ";
+      for (int i = 0; i < 6; ++i)
+      {
+        if (i > 0) std::cout << ":";
+        std::cout << std::hex << (int)mac[i];
+      }
+      std::cout << std::dec << std::endl;
+    }
   }
   else
   {
-    std::cout << "\r\n" << *TAG << "WiFi connection failed." << std::endl;
+    std::cout << "\r\n" << "WiFi connection failed." << std::endl;
   }
   return ret;
 }
@@ -722,11 +756,13 @@ void setup(void)
 
   Serial.begin(115200);
 
-  std::cout << "M5Stack M5Dial display width = " << std::to_string(dw) << ", height = " << std::to_string(dh) << std::endl;
+  if (my_debug)
+    std::cout << "M5Stack M5Dial display width = " << std::to_string(dw) << ", height = " << std::to_string(dh) << std::endl;
 
   start_scrn();
 
-  getID();
+  if (my_debug)
+    getID();
 
   std::cout << "\n\nM5Stack M5Dial Timezones test." << std::endl;
 
@@ -735,11 +771,6 @@ void setup(void)
   map_replace_first_zone();
 
   zone_idx = 0;
-
-  // NTP auto setting
-  //std::string elem_zone_code  = std::get<1>(zones_map[0]);
-  //configTzTime(elem_zone_code.c_str(), NTP_SERVER1, NTP_SERVER2, NTP_SERVER3);
-  //setTimezone();
 
   delay(1000);
 
@@ -758,31 +789,30 @@ void setup(void)
 
       Default value:
       3600000
-    */
-  
-    /*
-    /// See: https://github.com/espressif/esp-idf/blob/v5.0.2/components/lwip/include/apps/esp_sntp.h
-    /// SNTP sync status
-    typedef enum {
-        SNTP_SYNC_STATUS_RESET,         // Reset status.
-        SNTP_SYNC_STATUS_COMPLETED,     // Time is synchronized.
-        SNTP_SYNC_STATUS_IN_PROGRESS,   // Smooth time sync in progress.
-    } sntp_sync_status_t;
+    
+      See: https://github.com/espressif/esp-idf/blob/v5.0.2/components/lwip/include/apps/esp_sntp.h
+      SNTP sync status
+          typedef enum {
+            SNTP_SYNC_STATUS_RESET,         // Reset status.
+            SNTP_SYNC_STATUS_COMPLETED,     // Time is synchronized.
+            SNTP_SYNC_STATUS_IN_PROGRESS,   // Smooth time sync in progress.
+          } sntp_sync_status_t;
     */
 
     sntp_initialize();  // name sntp_init() results in compilor error "multiple definitions sntp_init()"
-    sntp_sync_status_t sntp_sync_status = sntp_get_sync_status();
+    //sntp_sync_status_t sntp_sync_status = sntp_get_sync_status();
+    int status = sntp_get_sync_status();
     String txt = "";
-    if (sntp_sync_status == 0) // SNTP_SYNC_STATUS_RESET
+    if (status == SNTP_SYNC_STATUS_RESET) // SNTP_SYNC_STATUS_RESET
       txt = "RESET";
-    else if (sntp_sync_status == 1) // SNTP_SYNC_STATUS_COMPLETED
+    else if (status == SNTP_SYNC_STATUS_COMPLETED)
       txt = "COMPLETED";
-    else if (sntp_sync_status == 2) // SNTP_SYNC_STATUS_IN_PROGRESS
+    else if (status == SNTP_SYNC_STATUS_IN_PROGRESS)
       txt = "IN PROGRESS";
     else
       txt = "UNKNOWN";
     
-    std::cout << "setup(): sntp_sync_status = " << txt << std::endl;
+    std::cout << "setup(): sntp_sync_status = " << txt.c_str() << std::endl;
 
     zone_idx = 0;
     setTimezone();
