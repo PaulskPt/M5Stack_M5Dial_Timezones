@@ -37,6 +37,10 @@ The following define sets the interval time:
 The internal RTC of the M5Dial device will be set to the NTP datetime stamp with the local time for the current Timezone.
 Next the sketch will display time zone name, timezone offset from UTC, date and time of the current Timezone.
 
+Debug output:
+In the sketch file, added a global variable ```my_debug```. The majority of monitor output I made conditionally controller by this new ```my_debug```.
+See the difference in monitor output in the two monitor_output.txt files.
+
 File secret.h:
 
 Update the file secret.h as far as needed:
