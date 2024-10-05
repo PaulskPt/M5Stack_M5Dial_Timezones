@@ -583,17 +583,17 @@ bool connect_WiFi(void)
 
   for (int i = 20; i && WiFi.status() != WL_CONNECTED; --i)
   {
-    std::cout << "." << std::flush;
+    if (my_debug)
+      std::cout << "." << std::flush;
     delay(500);
   }
   if (WiFi.status() == WL_CONNECTED) 
   {
     ret = true;
-    std::cout << "\r\n" << std::flush;
     if (my_debug)
-      std::cout << "WiFi Connected to: " << WIFI_SSID << std::endl;
+      std::cout << "\r\nWiFi Connected to: " << WIFI_SSID << std::endl;
     else
-      std::cout << "WiFi Connected" << std::endl;
+      std::cout << "\r\nWiFi Connected" << std::endl;
 
     if (my_debug)
     {
