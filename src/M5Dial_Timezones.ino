@@ -95,7 +95,7 @@ void spkr(void)
 {
   // Speaker test
   // Play two tones alternating
-  // Use M5.Speaker.beep or M5.Speaker.tone
+  // Use M5Dial.Speaker.beep or M5Dial.Speaker.tone
   M5Dial.Speaker.setVolume(8); // (range is 0 to 10)
   for (int j=0; j < 2; j++)
   {
