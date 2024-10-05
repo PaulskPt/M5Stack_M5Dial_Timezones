@@ -22,6 +22,12 @@ For each of the six timezones, in four steps, the following data will be display
    3) date info, for example "Monday September 30 2024"; 
    4) time info, for example: "20:52:28 in: Lisbon".
 
+Each time zone sequence of four displays is repeated for 25 seconds. This repeat time is defined in function ```loop()```:
+
+```
+894 unsigned long zone_chg_interval_t = 25000L; // 25 seconds
+```
+
 Reset:
 
 Pressing the button (of the display) will cause a software reset.
