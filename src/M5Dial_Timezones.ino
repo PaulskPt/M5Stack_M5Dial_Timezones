@@ -48,7 +48,7 @@ namespace {  // anonymous namespace (also known as an unnamed namespace)
 #undef CONFIG_LWIP_SNTP_UPDATE_DELAY
 #endif
 
-#define CONFIG_LWIP_SNTP_UPDATE_DELAY  1 * 60 * 1000 // = 1 minutes (15 seconds is the minimum). Original setting: 3600000  // 1 hour
+#define CONFIG_LWIP_SNTP_UPDATE_DELAY  15 * 60 * 1000 // = 15 minutes (15 seconds is the minimum). Original setting: 3600000  // 1 hour
 
 std::string elem_zone;
 std::string elem_zone_code;
@@ -197,7 +197,6 @@ bool is_tm_empty(const std::tm& timeinfo)
         timeinfo.tm_wday == 0 && timeinfo.tm_yday == 0 && timeinfo.tm_isdst == 0;
 }
 
-
 void time_sync_notification_cb(struct timeval *tv)
 {
     std::shared_ptr<std::string> TAG = std::make_shared<std::string>("sntp_initialize(): ");
@@ -207,10 +206,9 @@ void time_sync_notification_cb(struct timeval *tv)
 
 void sntp_initialize() {
     std::shared_ptr<std::string> TAG = std::make_shared<std::string>("sntp_initialize(): ");
-    uint32_t sntp_polling_interval_ms = 60 * 1000L; // for test set to 1 minute. Later on change to 1 hour
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, NTP_SERVER1);
-    sntp_set_sync_interval(sntp_polling_interval_ms);
+    sntp_set_sync_interval(CONFIG_LWIP_SNTP_UPDATE_DELAY);
     sntp_set_time_sync_notification_cb(time_sync_notification_cb);
     sntp_init();
     std::cout << *TAG << "sntp initialized" << std::endl;
@@ -317,19 +315,26 @@ bool set_RTC(void)
   bool ret = false;
   // Serial.print("set_RTC(): timeinfo.tm_year = ");
   // Serial.println(timeinfo.tm_year);
-  if (timeinfo.tm_year + 1900 > 1900)
+  struct tm my_timeinfo;
+  if(!getLocalTime(&my_timeinfo))
+  {
+    std::cout << "Failed to obtain time" << std::endl;
+    return ret;
+  }
+
+  if (my_timeinfo.tm_year + 1900 > 1900)
   {
     //                            YYYY  MM  DD      hh  mm  ss
     //M5Dial.Rtc.setDateTime( { { 2021, 12, 31 }, { 12, 34, 56 } } );
-    M5Dial.Rtc.setDateTime( {{timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday}, {timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec}} );
+    M5Dial.Rtc.setDateTime( {{my_timeinfo.tm_year + 1900, my_timeinfo.tm_mon + 1, my_timeinfo.tm_mday}, {my_timeinfo.tm_hour, my_timeinfo.tm_min, my_timeinfo.tm_sec}} );
     std::cout << "set_RTC(): internal RTC has been set to: " 
     << std::to_string(RTCdate.tm_year) << "-" 
-    << std::setfill('0') << std::setw(2) << std::to_string(timeinfo.tm_mon) << "-"
-    << std::setfill('0') << std::setw(2) << std::to_string(timeinfo.tm_mday) << " ("
-    << wd[timeinfo.tm_wday] << ") "
-    << std::setfill('0') << std::setw(2) << std::to_string(timeinfo.tm_hour) << ":"
-    << std::setfill('0') << std::setw(2) << std::to_string(timeinfo.tm_min) << ":"
-    << std::setfill('0') << std::setw(2) << std::to_string(timeinfo.tm_sec) << std::endl;
+    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_mon) << "-"
+    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_mday) << " ("
+    << wd[my_timeinfo.tm_wday] << ") "
+    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_hour) << ":"
+    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_min) << ":"
+    << std::setfill('0') << std::setw(2) << std::to_string(my_timeinfo.tm_sec) << std::endl;
     //std::cout << "Check: " << std::endl;
     //poll_RTC();
     ret = true;
@@ -342,17 +347,6 @@ void poll_RTC(void)
   std::shared_ptr<std::string> TAG = std::make_shared<std::string>("poll_RTC(): ");
   time_t t = time(NULL);
   delay(500);
-
-  auto dt = M5Dial.Rtc.getDateTime();
-
-  std::cout << std::dec << *TAG << "RTC LOCAL : " 
-    << std::setw(4) << (dt.date.year) << "-"
-    << std::setfill('0') << std::setw(2) << std::to_string(dt.date.month) << "-"
-    << std::setfill('0') << std::setw(2) << std::to_string(dt.date.date) << " ("
-    << wd[dt.date.weekDay] << ") "                                                       // 0 = Sunday, 1 = Monday, etc.
-    << std::setfill('0') << std::setw(2) << std::to_string(dt.time.hours) << ":"
-    << std::setfill('0') << std::setw(2) << std::to_string(dt.time.minutes)  << ":"
-    << std::setfill('0') << std::setw(2) << std::to_string(dt.time.seconds)  << std::endl;
 
   /// ESP32 internal timer
   // struct tm timeinfo;
