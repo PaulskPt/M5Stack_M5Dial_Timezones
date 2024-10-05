@@ -31,7 +31,9 @@ Each time zone sequence of four displays is repeated for 25 seconds. This repeat
 Sound:
 
 The M5Dial has a built-in speaker, however my experience is that the sound is very weak, even with the volume set maximum (10).
-I also experienced that the audibility of the speaker sound depends on the frequency of the tone played. The function spkr() is called at the moment of NTP Time Synchronization.
+I also experienced that the audibility of the speaker sound depends on the frequency of the tone played. Another thing I noticed is that when using the speaker,
+the NTP Time Synchronization moment is delayed each time by 2 seconds. When the speaker is not used, there is no delay in the NTP Time Synchronization moment.
+For this reason I decided not to use the speaker. The function spkr() is called at the moment of NTP Time Synchronization.
 To control the sound I added a global variable:
 
 ```
