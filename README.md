@@ -27,8 +27,13 @@ Reset:
 Pressing the button (of the display) will cause a software reset.
 
 On reset the Arduino Sketch will try to connect to the WiFi Access Point of your choice (set in secret.h). 
-The sketch will connect to a NTP server of your choice. In this version the sketch uses a ```NTP polling system```. In function ```sntp_initialize()``` the ```sntp_polling_interval_ms``` is set to 60 * 1000L (1 minute).
-In a future change this polling interval will be set to 15 minutes.
+The sketch will connect to a NTP server of your choice. In this version the sketch uses a ```NTP polling system```. 
+The following define sets the interval time:
+
+```
+51 #define CONFIG_LWIP_SNTP_UPDATE_DELAY  15 * 60 * 1000 // = 15 minutes
+```
+
 The internal RTC of the M5Dial device will be set to the NTP datetime stamp with the local time for the current Timezone.
 Next the sketch will display time zone name, timezone offset from UTC, date and time of the current Timezone.
 
