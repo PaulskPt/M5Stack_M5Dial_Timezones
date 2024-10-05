@@ -234,9 +234,9 @@ void time_sync_notification_cb(struct timeval *tv)
     if (my_debug)
     {
       if (tv != nullptr) {
-          std::cout << "Parameter *tv, tv-<tv_sec (Seconds): " << tv->tv_sec << ", tv->tv_usec (microSeconds): " << tv->tv_usec << std::endl;
+          std::cout << *TAG << "Parameter *tv, tv-<tv_sec (Seconds): " << tv->tv_sec << ", tv->tv_usec (microSeconds): " << tv->tv_usec << std::endl;
       } else {
-          std::cerr << "Invalid timeval pointer" << std::endl;
+          std::cerr << *TAG << "Invalid timeval pointer" << std::endl;
       }
     }
 
@@ -244,7 +244,7 @@ void time_sync_notification_cb(struct timeval *tv)
     {
       spkr();
     }
-    std::shared_ptr<std::string> TAG = std::make_shared<std::string>("sntp_initialize(): ");
+  
     time_t t = time(NULL);
     std::cout << *TAG << "time synchronized at time (UTC): " << asctime(gmtime(&t)) << std::flush;  // prevent a 2nd LF. Do not use std::endl
     ntp_sync_notification_txt(true);
