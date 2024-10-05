@@ -28,6 +28,16 @@ Each time zone sequence of four displays is repeated for 25 seconds. This repeat
 894 unsigned long zone_chg_interval_t = 25000L; // 25 seconds
 ```
 
+Sound:
+
+The M5Dial has a built-in speaker, however my experience is that the sound is very weak, even with the volume set maximum (10).
+I also experienced that the audibility of the speaker sound depends on the frequency of the tone played.
+To control the sound I added a global variable:
+
+```
+59 bool spkr_on = true;
+```
+
 Reset:
 
 Pressing the button (of the display) will cause a software reset.
