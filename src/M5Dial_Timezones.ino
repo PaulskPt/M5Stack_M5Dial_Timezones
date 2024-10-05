@@ -56,7 +56,6 @@ std::string elem_zone_code_old;
 bool zone_has_changed = false;
 
 bool my_debug = false;
-bool use_local_time = false; // for the external RTC    (was: use_local_time = true // for the ESP32 internal clock )
 struct tm timeinfo = {};
 bool use_timeinfo = true;
 std::tm* tm_local = {};
@@ -903,7 +902,7 @@ void loop(void)
         printLocalTime();
         disp_data();
 
-        // Poll NTP and set external RTC to synchronize it
+        // Poll NTP and set RTC to synchronize it
         Done = 0; // Reset this count also
       }
     }
