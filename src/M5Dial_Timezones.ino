@@ -574,6 +574,7 @@ void chg_display_clr(void)
 
 bool connect_WiFi(void)
 {
+  std::shared_ptr<std::string> TAG = std::make_shared<std::string>("connect_WiFi(): ");
   bool ret = false;
   if (my_debug)
   {
