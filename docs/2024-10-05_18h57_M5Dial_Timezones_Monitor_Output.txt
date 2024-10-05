@@ -28,10 +28,10 @@ entry 0x403c98d0
 
 M5Stack M5Dial Timezones test.
 
-WiFi: ......
-
 WiFi Connected.
 sntp_initialize(): sntp polling interval: 15 Minute(s)
 setup(): sntp_sync_status = RESET
 sntp_initialize(): time synchronized at time (UTC): Sat Oct  5 17:35:56 2024   <<<=== 1st NTP synchronization
 sntp_initialize(): time synchronized at time (UTC): Sat Oct  5 17:50:56 2024   <<<=== 2nd NTP synchronization exactly 15 minutes later as the 1st
+sntp_initialize(): time synchronized at time (UTC): Sat Oct  5 18:05:56 2024
+sntp_initialize(): time synchronized at time (UTC): Sat Oct  5 18:20:56 2024
