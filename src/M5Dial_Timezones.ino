@@ -230,10 +230,14 @@ bool is_tm_empty(const std::tm& timeinfo)
 
 void time_sync_notification_cb(struct timeval *tv)
 {
-    if (tv != nullptr) {
-        std::cout << "Seconds: " << tv->tv_sec << ", Microseconds: " << tv->tv_usec << std::endl;
-    } else {
-        std::cerr << "Invalid timeval pointer" << std::endl;
+    std::shared_ptr<std::string> TAG = std::make_shared<std::string>("time_sync_notification_cb(): ");
+    if (my_debug)
+    {
+      if (tv != nullptr) {
+          std::cout << "Parameter *tv, tv-<tv_sec (Seconds): " << tv->tv_sec << ", tv->tv_usec (microSeconds): " << tv->tv_usec << std::endl;
+      } else {
+          std::cerr << "Invalid timeval pointer" << std::endl;
+      }
     }
 
     if (spkr_on == true)
