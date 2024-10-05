@@ -37,7 +37,7 @@ For this reason I decided not to use the speaker. The function spkr() is called 
 To control the sound I added a global variable:
 
 ```
-59 bool spkr_on = true;
+59 bool spkr_on = false;
 ```
 
 Reset:
