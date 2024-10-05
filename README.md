@@ -34,6 +34,7 @@ The following define sets the interval time:
 51 #define CONFIG_LWIP_SNTP_UPDATE_DELAY  15 * 60 * 1000 // = 15 minutes
 ```
 
+At the moment of a NTP Time Synchronization, the text "TS" will be shown in the middle of the toprow of the display.
 The internal RTC of the M5Dial device will be set to the NTP datetime stamp with the local time for the current Timezone.
 Next the sketch will display time zone name, timezone offset from UTC, date and time of the current Timezone.
 
