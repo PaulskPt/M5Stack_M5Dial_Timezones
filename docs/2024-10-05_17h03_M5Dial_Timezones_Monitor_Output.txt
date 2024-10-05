@@ -1,0 +1,112 @@
+2024-10-05 17h03 utc+1
+
+Platform: M5Stack M5Dial
+
+IDE: Arduino IDE v2.3.3
+
+Sketch: M5Dial_Timezones.ino version 4.0
+
+NOTE: This version uses NTP automatic polling.
+
+Monitor output:
+
+
+Button pressed
+Going to do a software reset...
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x420af1da
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x44c
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a80
+entry 0x403c98d0
+M5Stack M5Dial display width = 240, height = 240
+
+ESP32 Chip ID = C4C2537C5824
+chipid mirrored (same as M5Burner MAC): 24:58:7C:53:C2:C4
+
+M5Stack M5Dial Timezones test.
+map_replace_first_zone(): successful replaced the first record of the zone_map:
+zone original: "Asia/Tokyo", replaced by zone: "Europe/Lisbon" (from file secrets.h)
+zone code original: "JST-9", replaced by zone code: "WET0WEST,M3.5.0/1,M10.5.0"
+
+
+WiFi: ................
+
+connect_WiFi(): 
+MAC: 24:58:7c:53:c2:c4
+sntp_initialize(): sntp initialized
+sntp_initialize(): sntp set to polling mode
+sntp_initialize(): sntp polling interval: 15 Minute(s)
+setup(): sntp_sync_status = 1
+setTimezone(): Timezone has changed to: "Europe/Lisbon"
+setTimezone(): Timezone code has changed to: "WET0WEST,M3.5.0/1,M10.5.0"
+setTimezone(): check environment variable TZ = "WET0WEST,M3.5.0/1,M10.5.0"
+printLocalTime(): Timezone: Europe/Lisbon, datetime: 2024-10-05 18:03:38   <<<=== 1st local time is wrong
+set_RTC(): internal RTC has been set to: 0-09-05 (Sat) 18:03:38
+sntp_initialize(): time synchronized at time (UTC): Sat Oct  5 16:03:39 2024    <<<=== 1st NTP synchronization
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:03:39    
+poll_RTC(): ESP32 Europe/Lisbon: 2024-10-05 (Sat) 17:03:39 <<<=== After NTP synchronization, the local time is OK
+setTimezone(): check environment variable TZ = "WET0WEST,M3.5.0/1,M10.5.0"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:03:46
+poll_RTC(): ESP32 Europe/Lisbon: 2024-10-05 (Sat) 17:03:46
+printLocalTime(): Timezone: Europe/Lisbon, datetime: 2024-10-05 17:03:46
+setTimezone(): Timezone has changed to: "America/Kentucky/Louisville"
+setTimezone(): Timezone code has changed to: "EST5EDT,M3.2.0,M11.1.0"
+setTimezone(): check environment variable TZ = "EST5EDT,M3.2.0,M11.1.0"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:04:13
+poll_RTC(): ESP32 America/Kentucky/Louisville: 2024-10-05 (Sat) 12:04:13
+printLocalTime(): Timezone: America/Kentucky/Louisville, datetime: 2024-10-05 12:04:13
+setTimezone(): check environment variable TZ = "EST5EDT,M3.2.0,M11.1.0"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:04:40
+poll_RTC(): ESP32 America/New_York: 2024-10-05 (Sat) 12:04:40
+printLocalTime(): Timezone: America/New_York, datetime: 2024-10-05 12:04:40
+setTimezone(): Timezone has changed to: "America/Sao_Paulo"
+setTimezone(): Timezone code has changed to: "<-03>3"
+setTimezone(): check environment variable TZ = "<-03>3"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:05:07
+poll_RTC(): ESP32 America/Sao_Paulo: 2024-10-05 (Sat) 13:05:07
+printLocalTime(): Timezone: America/Sao_Paulo, datetime: 2024-10-05 13:05:07
+setTimezone(): Timezone has changed to: "Europe/Amsterdam"
+setTimezone(): Timezone code has changed to: "CET-1CEST,M3.5.0,M10.5.0/3"
+setTimezone(): check environment variable TZ = "CET-1CEST,M3.5.0,M10.5.0/3"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:05:34
+poll_RTC(): ESP32 Europe/Amsterdam: 2024-10-05 (Sat) 18:05:34
+printLocalTime(): Timezone: Europe/Amsterdam, datetime: 2024-10-05 18:05:34
+setTimezone(): Timezone has changed to: "Australia/Sydney"
+setTimezone(): Timezone code has changed to: "AEST-10AEDT,M10.1.0,M4.1.0/3"
+setTimezone(): check environment variable TZ = "AEST-10AEDT,M10.1.0,M4.1.0/3"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:06:01
+poll_RTC(): ESP32 Australia/Sydney: 2024-10-06 (Sun) 03:06:01
+printLocalTime(): Timezone: Australia/Sydney, datetime: 2024-10-06 03:06:01
+setTimezone(): Timezone has changed to: "Europe/Lisbon"
+setTimezone(): Timezone code has changed to: "WET0WEST,M3.5.0/1,M10.5.0"
+setTimezone(): check environment variable TZ = "WET0WEST,M3.5.0/1,M10.5.0"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:06:28
+poll_RTC(): ESP32 Europe/Lisbon: 2024-10-05 (Sat) 17:06:28
+
+[...]
+
+printLocalTime(): Timezone: America/Kentucky/Louisville, datetime: 2024-10-05 12:17:41
+setTimezone(): check environment variable TZ = "EST5EDT,M3.2.0,M11.1.0"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:18:07
+poll_RTC(): ESP32 America/New_York: 2024-10-05 (Sat) 12:18:07
+printLocalTime(): Timezone: America/New_York, datetime: 2024-10-05 12:18:07
+setTimezone(): Timezone has changed to: "America/Sao_Paulo"
+setTimezone(): Timezone code has changed to: "<-03>3"
+setTimezone(): check environment variable TZ = "<-03>3"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:18:34
+poll_RTC(): ESP32 America/Sao_Paulo: 2024-10-05 (Sat) 13:18:34
+printLocalTime(): Timezone: America/Sao_Paulo, datetime: 2024-10-05 13:18:34
+sntp_initialize(): time synchronized at time (UTC): Sat Oct  5 16:18:39 2024    <<<=== 2nd NTP synchronization, after exactly 5 minutes!
+setTimezone(): Timezone has changed to: "Europe/Amsterdam"
+setTimezone(): Timezone code has changed to: "CET-1CEST,M3.5.0,M10.5.0/3"
+setTimezone(): check environment variable TZ = "CET-1CEST,M3.5.0,M10.5.0/3"
+poll_RTC(): ESP32 UTC : 2024-10-05 (Sat) 16:19:01
+poll_RTC(): ESP32 Europe/Amsterdam: 2024-10-05 (Sat) 18:19:01
+
+[...]
+
