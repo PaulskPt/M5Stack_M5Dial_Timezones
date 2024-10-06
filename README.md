@@ -89,6 +89,9 @@ Docs:
 
 Monitor_output.txt
 
+Note:
+2024-10-06 11h05 AM UTC+1: the compiled sketch ran for a whole night without error.
+
 Images: 
 
 Images taken during the sketch was running are in the folder ```images```.
