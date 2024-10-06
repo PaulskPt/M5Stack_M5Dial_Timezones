@@ -33,10 +33,6 @@ M5Stack M5Dial Timezones test.
 WiFi Connected
 sntp_initialize(): sntp polling interval: 15 Minute(s)
 setup(): sntp_sync_status = RESET
-
-WiFi Connected
-sntp_initialize(): sntp polling interval: 15 Minute(s)
-setup(): sntp_sync_status = RESET
 time_sync_notification_cb(): time synchronized at time (UTC): Sat Oct  5 23:27:14 2024
 time_sync_notification_cb(): time synchronized at time (UTC): Sat Oct  5 23:42:14 2024
 time_sync_notification_cb(): time synchronized at time (UTC): Sat Oct  5 23:57:14 2024
