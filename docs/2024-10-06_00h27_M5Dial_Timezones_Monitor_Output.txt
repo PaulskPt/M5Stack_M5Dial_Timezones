@@ -1,0 +1,42 @@
+2024-10-06 00h27 utc+1
+
+Platform: M5Stack M5Dial
+
+IDE: Arduino IDE v2.3.3
+
+Sketch: M5Dial_Timezones.ino version 4.0
+
+NOTE: This version uses NTP automatic polling.
+      Now much less monitor output after adding global variable: bool my_debug = false;
+	  and adding at most places conditional monitor output controlled by my_debug.
+	  Below the "new" monitor output.
+
+Monitor output:
+
+Button pressed
+Going to do a software reset...
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x420b3f02
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x44c
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a80
+entry 0x403c98d0
+
+
+M5Stack M5Dial Timezones test.
+
+
+WiFi Connected
+sntp_initialize(): sntp polling interval: 15 Minute(s)
+setup(): sntp_sync_status = RESET
+
+WiFi Connected
+sntp_initialize(): sntp polling interval: 15 Minute(s)
+setup(): sntp_sync_status = RESET
+time_sync_notification_cb(): time synchronized at time (UTC): Sat Oct  5 23:27:14 2024
+time_sync_notification_cb(): time synchronized at time (UTC): Sat Oct  5 23:42:14 2024
+time_sync_notification_cb(): time synchronized at time (UTC): Sat Oct  5 23:57:14 2024
